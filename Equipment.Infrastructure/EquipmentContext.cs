@@ -22,6 +22,10 @@ public sealed class EquipmentContext : DbContext
             .HasKey(e => e.Id);
 
         modelBuilder.Entity<Equipment>()
-            .HasData(new Equipment { Id = 1, Type = "Injection Molder", Location = "Billund" });
+            .HasData(
+                new Equipment { Id = 1, Type = "Injection Molder", Location = "Billund" }, 
+                new Equipment { Id = 2, Type = "Injection Molder", Location = "Billund" }, 
+                new Equipment { Id = 3, Type = "Injection Molder", Location = "Billund" }
+            );
     }
 }

@@ -1,5 +1,7 @@
-﻿using Equipment.Domain;
+﻿using Equipment.Api.LiveView;
+using Equipment.Domain;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Equipment.Api;
 
@@ -8,13 +10,16 @@ public class EquipmentStatusController : Controller
 {
     private readonly IEquipmentRepository _equipmentRepository;
     private readonly IEquipmentStatusRepository _equipmentStatusRepository;
+    private readonly IHubContext<EquipmentStatusHub> _hubContext;
 
     public EquipmentStatusController(
         IEquipmentRepository equipmentRepository, 
-        IEquipmentStatusRepository equipmentStatusRepository)
+        IEquipmentStatusRepository equipmentStatusRepository, 
+        IHubContext<EquipmentStatusHub> hubContext)
     {
         _equipmentRepository = equipmentRepository;
         _equipmentStatusRepository = equipmentStatusRepository;
+        _hubContext = hubContext;
     }
 
     [Route("equipment/{equipmentId}/status")]
@@ -27,6 +32,8 @@ public class EquipmentStatusController : Controller
         }
 
         await _equipmentStatusRepository.Upsert(new EquipmentStatus(0, equipmentId, equipmentStatus.Timestamp, equipmentStatus.Status));
+        
+        await _hubContext.Clients.All.SendCoreAsync("ReceiveStatusUpdate", new object[] { equipmentId, Enum.GetName(equipmentStatus.Status)! });
 
         return Ok();
     }
