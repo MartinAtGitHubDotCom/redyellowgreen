@@ -37,4 +37,18 @@ public class EquipmentStatusController : Controller
 
         return Ok();
     }
+    
+    [Route("equipment/{equipmentId}/history")]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<EquipmentStatusDto>>> GetEquipmentStatusHistory(int equipmentId)
+    {
+        if (!await _equipmentRepository.Exists(equipmentId))
+        {
+            return NotFound();
+        }
+
+        var statusHistory = await _equipmentStatusRepository.GetStatusHistory(equipmentId);
+        
+        return Ok(statusHistory.Select(s => new EquipmentStatusDto(s.Timestamp, s.Status)));
+    }
 }

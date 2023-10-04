@@ -19,4 +19,9 @@ public class EquipmentStatus
             Status = equipmentStatus.Status,
         };
     }
+
+    public Domain.EquipmentStatus ToDomainObject()
+    {
+        return new Domain.EquipmentStatus(Id, EquipmentId, Timestamp, Status);
+    }
 }

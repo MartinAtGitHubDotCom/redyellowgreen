@@ -1,5 +1,6 @@
 using Equipment.Infrastructure;
 using System.Text.Json.Serialization;
+using Equipment.Api;
 using Equipment.Api.LiveView;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddInfrastructure()
+    .AddHostedService<FakeEquipmentStatusPublisher>()
     .AddControllers()
     .AddJsonOptions(opts =>
     {
